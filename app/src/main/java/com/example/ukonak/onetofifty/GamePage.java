@@ -39,8 +39,30 @@ public class GamePage extends AppCompatActivity {
         Log.i("MYLOGS",String.valueOf(view.getTag()));
         Log.i("NEWLOGS",String.valueOf(numberButtons.get(Integer.valueOf(String.valueOf(view.getTag()))).getText()));
         int numberTapped = Integer.valueOf(String.valueOf(numberButtons.get(Integer.valueOf(String.valueOf(view.getTag()))).getText()));
+
         if ( numberTapped == nextNumber)
         {
+            if (numberTapped<=16)
+            {
+                int randomNumber;
+                do {
+                    Random random = new Random();
+                    randomNumber = random.nextInt(16) + 17;
+                }while ( isGeneratedBefore(randomNumber) );
+                randomNumbers.add(randomNumber);
+                numberButtons.get(Integer.valueOf(String.valueOf(view.getTag()))).setText(String.valueOf(randomNumber));
+            }
+            else if ( numberTapped<=32 )
+            {
+                int randomNumber;
+                do {
+                    Random random = new Random();
+                    randomNumber = random.nextInt(16) + 33;
+                }while ( isGeneratedBefore(randomNumber) );
+                randomNumbers.add(randomNumber);
+                numberButtons.get(Integer.valueOf(String.valueOf(view.getTag()))).setText(String.valueOf(randomNumber));
+            }
+            else
             numberButtons.get(Integer.valueOf(String.valueOf(view.getTag()))).setVisibility(View.INVISIBLE);
             nextNumber++;
         }
