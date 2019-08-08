@@ -42,6 +42,7 @@ public class GamePage extends AppCompatActivity {
 
         if ( numberTapped == nextNumber)
         {
+            Log.i("MYLOGS","equality achieved.");
             if (numberTapped<=16)
             {
                 int randomNumber;
@@ -59,6 +60,16 @@ public class GamePage extends AppCompatActivity {
                     Random random = new Random();
                     randomNumber = random.nextInt(16) + 33;
                 }while ( isGeneratedBefore(randomNumber) );
+                randomNumbers.add(randomNumber);
+                numberButtons.get(Integer.valueOf(String.valueOf(view.getTag()))).setText(String.valueOf(randomNumber));
+            }
+            else if (numberTapped<=34)
+            {
+                int randomNumber;
+                do{
+                    Random random = new Random();
+                    randomNumber = random.nextInt(2) + 49;
+                }while (isGeneratedBefore(randomNumber));
                 randomNumbers.add(randomNumber);
                 numberButtons.get(Integer.valueOf(String.valueOf(view.getTag()))).setText(String.valueOf(randomNumber));
             }
