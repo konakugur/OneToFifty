@@ -1,12 +1,16 @@
 package com.example.ukonak.onetofifty;
 
+import android.os.Handler;
+import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Chronometer;
 import android.widget.GridLayout;
 import android.widget.TableRow;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,11 +20,30 @@ public class GamePage extends AppCompatActivity {
 
     List<Integer> takenTags,randomNumbers;
     List<Button> numberButtons;
+    TextView textTimer;
     android.support.v7.widget.GridLayout firstPlayerArea;
     int nextNumber;
+    long startTime = 0L, timeInMs = 0L, updateTime= 0L,timeSwapBuff=0L;
+    Handler timeHandler = new Handler();
+    Runnable updateTimerThread = new Runnable() {
+        @Override
+        public void run() {
+            timeInMs = SystemClock.uptimeMillis() - startTime;
+            updateTime = timeSwapBuff + timeInMs;
+            Log.i("Chronometer",(String.valueOf(timeInMs)+" - " +String.valueOf(updateTime)));
+            int secs = (int) updateTime/1000;
+            int minutes =  secs / 60;
+            secs %= 60;
+            int milliseconds = (int)(updateTime%1000);
+            textTimer.setText(""+minutes+":"+String.format("%02d",secs)+":"+String.format("%03d",milliseconds));
+            timeHandler.postDelayed(this,0);
+        }
+    };
 
     public void initiateVariables()
     {
+
+        textTimer = findViewById(R.id.myChronometer);
         takenTags = new ArrayList<>();
         randomNumbers = new ArrayList<>();
         firstPlayerArea = (android.support.v7.widget.GridLayout) findViewById(R.id.firstPlayerArea);
@@ -76,6 +99,10 @@ public class GamePage extends AppCompatActivity {
             else
             numberButtons.get(Integer.valueOf(String.valueOf(view.getTag()))).setVisibility(View.INVISIBLE);
             nextNumber++;
+            if(numberTapped == 50){
+                timeSwapBuff += timeInMs;
+                timeHandler.removeCallbacks(updateTimerThread);
+            }
         }
     }
 
@@ -133,6 +160,11 @@ public class GamePage extends AppCompatActivity {
         }
     }
 
+    public void startChronometer(){
+        startTime = SystemClock.uptimeMillis();
+        Log.i("Chronometer",String.valueOf(startTime));
+        timeHandler.postDelayed(updateTimerThread,0);
+    }
 
 
     @Override
@@ -142,6 +174,7 @@ public class GamePage extends AppCompatActivity {
 
         initiateVariables();
         generateFirstNumbers();
+        startChronometer();
 
     }
 }
