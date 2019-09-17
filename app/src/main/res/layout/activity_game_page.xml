@@ -13,7 +13,28 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_above="@+id/firstPlayerArea"
-        android:layout_marginBottom="45sp"/>
+        android:layout_marginBottom="45sp"
+        android:visibility="invisible"/>
+
+    <TextView
+        android:id="@+id/endGame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_marginBottom="45sp"
+        android:textSize="50sp"
+        android:visibility="visible"
+        android:layout_above="@+id/restartButton"/>
+
+    <Button
+        android:id="@+id/restartButton"
+        android:onClick="restartFunction"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:text="Restart"/>
 
     <android.support.v7.widget.GridLayout
         android:id="@+id/firstPlayerArea"
@@ -23,7 +44,8 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="false"
         app:columnCount="4"
-        app:rowCount="4">
+        app:rowCount="4"
+        android:visibility="invisible">
 
         <Button
             android:id="@+id/button"

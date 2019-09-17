@@ -1,5 +1,6 @@
 package com.example.ukonak.onetofifty;
 
+import android.content.Intent;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
@@ -7,9 +8,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Chronometer;
-import android.widget.GridLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -19,9 +17,12 @@ import java.util.Random;
 public class GamePage extends AppCompatActivity {
 
     List<Integer> takenTags,randomNumbers;
+    Intent gamePageIntent;
     List<Button> numberButtons;
-    TextView textTimer;
+    TextView textTimer,endGame;
+    Button restartButton;
     android.support.v7.widget.GridLayout firstPlayerArea;
+    String chronometerTime;
     int nextNumber;
     long startTime = 0L, timeInMs = 0L, updateTime= 0L,timeSwapBuff=0L;
     Handler timeHandler = new Handler();
@@ -30,24 +31,30 @@ public class GamePage extends AppCompatActivity {
         public void run() {
             timeInMs = SystemClock.uptimeMillis() - startTime;
             updateTime = timeSwapBuff + timeInMs;
-            Log.i("Chronometer",(String.valueOf(timeInMs)+" - " +String.valueOf(updateTime)));
+            Log.i("Chronometer",((timeInMs)+" - " +(updateTime)));
             int secs = (int) updateTime/1000;
             int minutes =  secs / 60;
             secs %= 60;
             int milliseconds = (int)(updateTime%1000);
-            textTimer.setText(""+minutes+":"+String.format("%02d",secs)+":"+String.format("%03d",milliseconds));
+            chronometerTime = ""+minutes+":"+String.format("%02d",secs)+":"+String.format("%03d",milliseconds);
+            textTimer.setText(chronometerTime);
             timeHandler.postDelayed(this,0);
         }
     };
 
     public void initiateVariables()
     {
-
+        gamePageIntent = new Intent(this,GamePage.class);
+        restartButton = findViewById(R.id.restartButton);
+        restartButton.setVisibility(View.INVISIBLE);
+        endGame = findViewById(R.id.endGame);
+        endGame.setVisibility(View.INVISIBLE);
         textTimer = findViewById(R.id.myChronometer);
         takenTags = new ArrayList<>();
         randomNumbers = new ArrayList<>();
-        firstPlayerArea = (android.support.v7.widget.GridLayout) findViewById(R.id.firstPlayerArea);
+        firstPlayerArea =findViewById(R.id.firstPlayerArea);
         firstPlayerArea.setVisibility(View.VISIBLE);
+        textTimer.setVisibility(View.VISIBLE);
         numberButtons = new ArrayList<>();
         for(int i=0; i<firstPlayerArea.getChildCount();i++)
         {
@@ -59,13 +66,10 @@ public class GamePage extends AppCompatActivity {
 
     public void onNumberSelected(View view)
     {
-        Log.i("MYLOGS",String.valueOf(view.getTag()));
-        Log.i("NEWLOGS",String.valueOf(numberButtons.get(Integer.valueOf(String.valueOf(view.getTag()))).getText()));
         int numberTapped = Integer.valueOf(String.valueOf(numberButtons.get(Integer.valueOf(String.valueOf(view.getTag()))).getText()));
 
         if ( numberTapped == nextNumber)
         {
-            Log.i("MYLOGS","equality achieved.");
             if (numberTapped<=16)
             {
                 int randomNumber;
@@ -102,6 +106,11 @@ public class GamePage extends AppCompatActivity {
             if(numberTapped == 50){
                 timeSwapBuff += timeInMs;
                 timeHandler.removeCallbacks(updateTimerThread);
+                firstPlayerArea.setVisibility(View.INVISIBLE);
+                textTimer.setVisibility(View.INVISIBLE);
+                endGame.setText("Your time is: \n" + chronometerTime);
+                endGame.setVisibility(View.VISIBLE);
+                restartButton.setVisibility(View.VISIBLE);
             }
         }
     }
@@ -156,14 +165,16 @@ public class GamePage extends AppCompatActivity {
                     indexCounter++;
                 }
             }
-            Log.i("COUNTING",String.valueOf(randomNumbers.size()));
         }
     }
 
     public void startChronometer(){
         startTime = SystemClock.uptimeMillis();
-        Log.i("Chronometer",String.valueOf(startTime));
         timeHandler.postDelayed(updateTimerThread,0);
+    }
+
+    public void restartFunction(View view){
+        startActivity(gamePageIntent);
     }
 
 
